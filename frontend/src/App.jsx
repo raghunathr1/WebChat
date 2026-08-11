@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import "./App.css";
 
-const socket = io("http://localhost:5000");
+const SERVER_URL = "https://webchat-1-qcdg.onrender.com";
+
+const socket = io(SERVER_URL, {
+  transports: ["websocket", "polling"],
+});
 
 function App() {
   const [username, setUsername] = useState("");
@@ -14,16 +18,20 @@ function App() {
   // Online users
   const [onlineUsers, setOnlineUsers] = useState([]);
 
+  // Socket connection
+  const [connected, setConnected] = useState(false);
+
   // Typing indicator
   const [typingUser, setTypingUser] = useState("");
 
+  // --------------------------------------------------
   // Fetch previous messages
+  // --------------------------------------------------
+
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5000/api/messages"
-        );
+        const response = await fetch(`${SERVER_URL}/api/messages`);
 
         if (!response.ok) {
           throw new Error("Failed to fetch messages");
@@ -40,14 +48,24 @@ function App() {
     fetchMessages();
   }, []);
 
-  // Socket.io
+  // --------------------------------------------------
+  // Socket.io listeners
+  // --------------------------------------------------
+
   useEffect(() => {
     const handleConnect = () => {
       console.log("Connected:", socket.id);
+      setConnected(true);
+
+      // If user is already joined, notify server
+      if (username) {
+        socket.emit("join_chat", username);
+      }
     };
 
     const handleDisconnect = () => {
       console.log("Disconnected from server");
+      setConnected(false);
     };
 
     // Receive new message
@@ -76,18 +94,19 @@ function App() {
       setOnlineUsers(users);
     };
 
-    // Typing
+    // Typing indicator
     const handleUserTyping = (typingUsername) => {
       if (typingUsername !== username) {
         setTypingUser(typingUsername);
       }
     };
 
+    // Stop typing
     const handleUserStopTyping = () => {
       setTypingUser("");
     };
 
-    // Message status
+    // Message status updated
     const handleMessageStatusUpdated = (status) => {
       setMessages((prevMessages) =>
         prevMessages.map((msg) =>
@@ -114,6 +133,7 @@ function App() {
       handleMessageStatusUpdated
     );
 
+    // Cleanup
     return () => {
       socket.off("connect", handleConnect);
       socket.off("disconnect", handleDisconnect);
@@ -128,7 +148,26 @@ function App() {
     };
   }, [username]);
 
+  // --------------------------------------------------
+  // Mark received messages as read
+  // --------------------------------------------------
+
+  useEffect(() => {
+    if (!isJoined || !username) {
+      return;
+    }
+
+    messages.forEach((msg) => {
+      if (msg.username !== username && !msg.read) {
+        socket.emit("message_read", msg._id);
+      }
+    });
+  }, [messages, username, isJoined]);
+
+  // --------------------------------------------------
   // Join chat
+  // --------------------------------------------------
+
   const joinChat = (e) => {
     e.preventDefault();
 
@@ -145,7 +184,10 @@ function App() {
     socket.emit("join_chat", trimmedUsername);
   };
 
+  // --------------------------------------------------
   // Logout
+  // --------------------------------------------------
+
   const logout = () => {
     socket.emit("stop_typing");
 
@@ -156,7 +198,10 @@ function App() {
     setTypingUser("");
   };
 
+  // --------------------------------------------------
   // Send message
+  // --------------------------------------------------
+
   const sendMessage = (e) => {
     e.preventDefault();
 
@@ -171,18 +216,24 @@ function App() {
       message: trimmedMessage,
     });
 
+    // Stop typing
     socket.emit("stop_typing");
 
     setMessage("");
   };
 
+  // --------------------------------------------------
   // Handle typing
+  // --------------------------------------------------
+
   const handleMessageChange = (e) => {
     const value = e.target.value;
 
     setMessage(value);
 
-    if (!username) return;
+    if (!username) {
+      return;
+    }
 
     if (value.trim()) {
       socket.emit("typing", username);
@@ -191,12 +242,10 @@ function App() {
     }
   };
 
-  // Mark own message as read
-  const markMessageAsRead = (messageId) => {
-    socket.emit("message_read", messageId);
-  };
-
+  // --------------------------------------------------
   // Login screen
+  // --------------------------------------------------
+
   if (!isJoined) {
     return (
       <div className="app">
@@ -216,6 +265,7 @@ function App() {
                 setInputUsername(e.target.value)
               }
               maxLength={30}
+              required
             />
 
             <button type="submit">
@@ -227,7 +277,10 @@ function App() {
     );
   }
 
+  // --------------------------------------------------
   // Chat screen
+  // --------------------------------------------------
+
   return (
     <div className="app">
       <div className="chat-container">
@@ -238,7 +291,10 @@ function App() {
             <h1>Web-Chat</h1>
 
             <div className="online-count">
-              🟢 {onlineUsers.length} online
+              <span>
+                {connected ? "🟢" : "🔴"}
+              </span>{" "}
+              {onlineUsers.length} online
             </div>
           </div>
 
@@ -253,6 +309,7 @@ function App() {
 
         {/* Messages */}
         <div className="messages-container">
+
           {messages.length === 0 ? (
             <p className="empty-message">
               No messages yet. Start chatting!
@@ -266,16 +323,9 @@ function App() {
                     : "message"
                 }
                 key={msg._id}
-                onClick={() => {
-                  if (
-                    msg.username === username &&
-                    !msg.read
-                  ) {
-                    markMessageAsRead(msg._id);
-                  }
-                }}
               >
                 <div className="message-top">
+
                   <strong>
                     {msg.username}
                   </strong>
@@ -288,6 +338,7 @@ function App() {
                       minute: "2-digit",
                     })}
                   </span>
+
                 </div>
 
                 <p>{msg.message}</p>
@@ -295,6 +346,7 @@ function App() {
                 {/* Message status */}
                 {msg.username === username && (
                   <div className="message-status">
+
                     {msg.read ? (
                       <span className="read-status">
                         ✓✓ Read
@@ -308,6 +360,7 @@ function App() {
                         ✓ Sent
                       </span>
                     )}
+
                   </div>
                 )}
               </div>
@@ -317,12 +370,14 @@ function App() {
           {/* Typing indicator */}
           {typingUser && (
             <div className="typing-indicator">
-              <span>{typingUser}</span> is typing...
+              <span>{typingUser}</span>{" "}
+              is typing...
             </div>
           )}
+
         </div>
 
-        {/* Message Form */}
+        {/* Message form */}
         <form
           className="message-form"
           onSubmit={sendMessage}
