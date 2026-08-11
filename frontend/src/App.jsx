@@ -16,9 +16,7 @@ function App() {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5000/api/messages"
-        );
+        const response = await fetch("http://localhost:5000/api/messages");
 
         const data = await response.json();
         setMessages(data);
@@ -43,10 +41,7 @@ function App() {
     };
 
     const handleReceiveMessage = (newMessage) => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        newMessage,
-      ]);
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
     };
 
     socket.on("connect", handleConnect);
@@ -103,39 +98,22 @@ function App() {
     return (
       <div className="app">
         <div className="login-container">
-          <div className="login-icon">💬</div>
+                <h1>Real-Time Chat</h1>
 
-          <h1>Real-Time Chat</h1>
-
-          <p>
-            Enter your username to join the conversation
-          </p>
+          <p>Enter your username to join the conversation</p>
 
           <form onSubmit={joinChat}>
             <input
               type="text"
               placeholder="Enter username"
               value={inputUsername}
-              onChange={(e) =>
-                setInputUsername(e.target.value)
-              }
+              onChange={(e) => setInputUsername(e.target.value)}
               maxLength={30}
             />
 
-            <button type="submit">
-              Join Chat
-            </button>
+            <button type="submit">Join Chat</button>
           </form>
 
-          <div className="connection-status">
-            <span
-              className={
-                connected ? "status-dot online" : "status-dot"
-              }
-            ></span>
-
-            {connected ? "Connected" : "Connecting..."}
-          </div>
         </div>
       </div>
     );
@@ -145,52 +123,36 @@ function App() {
   return (
     <div className="app">
       <div className="chat-container">
-
         {/* Header */}
         <div className="chat-header">
           <div>
-            <h1>💬 Real-Time Chat</h1>
-
-            <div className="user-status">
-              <span className="status-dot online"></span>
-              Online
-            </div>
+            <h1> Web -Chat </h1>
           </div>
 
           <div className="user-info">
             <span>{username}</span>
 
-            <button onClick={logout}>
-              Logout
-            </button>
+            <button onClick={logout}>Logout</button>
           </div>
         </div>
 
         {/* Messages */}
         <div className="messages-container">
           {messages.length === 0 ? (
-            <p className="empty-message">
-              No messages yet. Start chatting!
-            </p>
+            <p className="empty-message">No messages yet. Start chatting!</p>
           ) : (
             messages.map((msg) => (
               <div
                 className={
-                  msg.username === username
-                    ? "message own-message"
-                    : "message"
+                  msg.username === username ? "message own-message" : "message"
                 }
                 key={msg._id}
               >
                 <div className="message-top">
-                  <strong>
-                    {msg.username}
-                  </strong>
+                  <strong>{msg.username}</strong>
 
                   <span>
-                    {new Date(
-                      msg.timestamp
-                    ).toLocaleTimeString([], {
+                    {new Date(msg.timestamp).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
@@ -204,24 +166,15 @@ function App() {
         </div>
 
         {/* Message input */}
-        <form
-          className="message-form"
-          onSubmit={sendMessage}
-        >
+        <form className="message-form" onSubmit={sendMessage}>
           <input
             type="text"
             placeholder="Type your message..."
             value={message}
-            onChange={(e) =>
-              setMessage(e.target.value)
-            }
+            onChange={(e) => setMessage(e.target.value)}
           />
-
-          <button type="submit">
-            Send
-          </button>
+          <button type="submit">Send</button>
         </form>
-
       </div>
     </div>
   );

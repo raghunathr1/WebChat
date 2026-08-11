@@ -2,8 +2,13 @@
 -A real-time chat application built using React, Node.js, Express, Socket.io, and MongoDB.
 The application allows multiple users to join the chat using a username, send messages, receive messages instantly without refreshing the page, and view previous chat history after refreshing the application.
 
-## Core Features
+## Github Link
+- https://github.com/raghunathr1/WebChat
 
+## Demo Link 
+- https://drive.google.com/file/d/1xA6BnWvm4lXAXl1MzwEnY9aYxXJSAOGj/view?usp=drivesdk
+
+## Core Features
 - Real-time messaging using Socket.io
 - Send and receive messages instantly
 - Chat history stored in MongoDB

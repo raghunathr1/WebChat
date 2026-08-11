@@ -4,8 +4,7 @@
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f1f5f9;
+  background: rgb(250, 249, 249);
 }
 
 button,
@@ -33,11 +32,6 @@ input {
   border-radius: 16px;
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
   text-align: center;
-}
-
-.login-icon {
-  font-size: 55px;
-  margin-bottom: 10px;
 }
 
 .login-container h1 {
@@ -72,39 +66,27 @@ input {
   padding: 13px;
   border: none;
   border-radius: 8px;
-  background: #2563eb;
+  background: rgb(3, 68, 73);
   color: white;
   font-size: 15px;
   cursor: pointer;
 }
 
 .login-container button:hover {
-  background: #1d4ed8;
+  background: #26ade2;
 }
 
 /* Connection */
 
 .connection-status {
   margin-top: 20px;
-  color: #64748b;
+  color: rgb(169, 169, 243);
   font-size: 14px;
 
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 7px;
-}
-
-.status-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #94a3b8;
-  display: inline-block;
-}
-
-.status-dot.online {
-  background: #22c55e;
 }
 
 /* Chat */
@@ -125,7 +107,7 @@ input {
 
 .chat-header {
   padding: 18px 20px;
-  background: #2563eb;
+  background: rgb(2, 143, 131);
   color: white;
 
   display: flex;
@@ -136,19 +118,6 @@ input {
 .chat-header h1 {
   margin: 0;
   font-size: 22px;
-}
-
-.user-status {
-  margin-top: 5px;
-  font-size: 13px;
-
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.user-status .status-dot {
-  background: #22c55e;
 }
 
 .user-info {
@@ -171,8 +140,8 @@ input {
 }
 
 .user-info button:hover {
-  background: white;
-  color: #2563eb;
+  background: rgb(231, 222, 222);
+  color: rgb(252, 6, 6);
 }
 
 /* Messages */
@@ -185,7 +154,8 @@ input {
 
 .message {
   max-width: 75%;
-  background: #f1f5f9;
+  background: rgb(229, 238, 111);
+  color: rgb(20, 20, 20);
   padding: 12px 15px;
   margin-bottom: 12px;
   border-radius: 10px;
@@ -193,7 +163,8 @@ input {
 
 .own-message {
   margin-left: auto;
-  background: #dbeafe;
+  background: rgb(2, 201, 236);
+  color: black;
 }
 
 .message-top {
@@ -208,7 +179,7 @@ input {
 
 .message-top span {
   font-size: 12px;
-  color: #64748b;
+  color: rgb(14, 13, 13);
 }
 
 .message p {
@@ -219,7 +190,7 @@ input {
 
 .empty-message {
   text-align: center;
-  color: #64748b;
+  color: #cf3f06;
   margin-top: 50px;
 }
 
