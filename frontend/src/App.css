@@ -5,6 +5,7 @@
 body {
   margin: 0;
   background: rgb(250, 249, 249);
+  font-family: Arial, sans-serif;
 }
 
 button,
@@ -76,19 +77,6 @@ input {
   background: #26ade2;
 }
 
-/* Connection */
-
-.connection-status {
-  margin-top: 20px;
-  color: rgb(169, 169, 243);
-  font-size: 14px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 7px;
-}
-
 /* Chat */
 
 .chat-container {
@@ -109,7 +97,6 @@ input {
   padding: 18px 20px;
   background: rgb(2, 143, 131);
   color: white;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -118,6 +105,12 @@ input {
 .chat-header h1 {
   margin: 0;
   font-size: 22px;
+}
+
+.online-count {
+  margin-top: 5px;
+  font-size: 13px;
+  opacity: 0.95;
 }
 
 .user-info {
@@ -159,6 +152,7 @@ input {
   padding: 12px 15px;
   margin-bottom: 12px;
   border-radius: 10px;
+  cursor: pointer;
 }
 
 .own-message {
@@ -188,10 +182,34 @@ input {
   word-break: break-word;
 }
 
+.message-status {
+  margin-top: 5px;
+  text-align: right;
+  font-size: 11px;
+}
+
+.read-status {
+  font-weight: bold;
+}
+
 .empty-message {
   text-align: center;
   color: #cf3f06;
   margin-top: 50px;
+}
+
+/* Typing */
+
+.typing-indicator {
+  display: inline-block;
+  align-self: flex-start;
+  background: #f1f5f9;
+  color: #64748b;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-bottom: 10px;
+  font-style: italic;
 }
 
 /* Message Form */
@@ -199,7 +217,6 @@ input {
 .message-form {
   padding: 15px;
   border-top: 1px solid #e2e8f0;
-
   display: flex;
   gap: 10px;
 }
